@@ -4,10 +4,10 @@ const geocoder = require('../utils/geocoder')
 const StoreSchema = new mongoose.Schema({
 	storeId: {
 		type: String,
-		required: [true, 'Please add in a store ID'],
+		required: [true, 'Please add a store ID'],
 		unique: true,
 		trim: true,
-		maxlength: [15, 'Store ID must be less than 15 characters long'],
+		maxlength: [10, 'Store ID must be less than 10 chars'],
 	},
 	address: {
 		type: String,
@@ -30,7 +30,6 @@ const StoreSchema = new mongoose.Schema({
 	},
 })
 
-// Mongoose Geocode Middleware
 // Geocode & create location
 StoreSchema.pre('save', async function (next) {
 	const loc = await geocoder.geocode(this.address)
@@ -40,7 +39,7 @@ StoreSchema.pre('save', async function (next) {
 		formattedAddress: loc[0].formattedAddress,
 	}
 
-	// Do not save address in DB
+	// Do not save address
 	this.address = undefined
 	next()
 })
